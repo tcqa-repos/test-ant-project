@@ -43,7 +43,7 @@
 
     <target name="main" depends="clean,run"/>
 
-    <target name="test" depends="jar">
+    <target name="test-all" depends="jar" if="${test.undefined}">
         <junit printsummary="yes">
             <classpath>
                 <path refid="classpath"/>
@@ -66,7 +66,6 @@
         </and>
     </condition>
 
-
     <target name="test-selective" depends="jar" unless="${test.undefined}">
         <junit printsummary="yes">
             <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
@@ -79,6 +78,8 @@
             <test name="${teamcity.remote-debug.junit.class}" methods="${teamcity.remote-debug.junit.method}"/>
         </junit>
     </target>
+
+    <target name="test" depends="test-all, test-selective"/>
 
 
 </project>
