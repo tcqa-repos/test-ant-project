@@ -15,6 +15,12 @@
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
 
 
+    <echo message="Remote Debug properties:"/>
+    <echo message="${teamcity.remote-debug.jvm.options}"/>
+    <echo message="${teamcity.remote-debug.junit.method}"/>
+    <echo message="${teamcity.remote-debug.junit.class}"/>
+
+
     <target name="clean">
         <delete dir="${build.dir}"/>
     </target>
@@ -43,7 +49,17 @@
 
     <target name="main" depends="clean,run"/>
 
-    <target name="test-all" depends="jar" if="${test.undefined}">
+    <condition property="test.remote-debug.defined" else="false" value="true">
+        <and>
+            <isset property="${teamcity.remote-debug.jvm.options}"/>
+            <isset property="${teamcity.remote-debug.junit.method}"/>
+            <isset property="${teamcity.remote-debug.junit.class}"/>
+        </and>
+    </condition>
+
+    <echo message="Remote debug: ${test.remote-debug.defined}"/>
+
+    <target name="test-all" depends="jar" unless="${test.remote-debug.defined}">
         <junit printsummary="yes">
             <classpath>
                 <path refid="classpath"/>
@@ -57,16 +73,8 @@
             </batchtest>
         </junit>
     </target>
-
-    <condition property="test.undefined" else="true" value="false">
-        <and>
-        <isset property="${teamcity.remote-debug.jvm.options}"/>
-        <isset property="${teamcity.remote-debug.junit.method}"/>
-        <isset property="${teamcity.remote-debug.junit.class}"/>
-        </and>
-    </condition>
-
-    <target name="test-selective" depends="jar" unless="${test.undefined}">
+    
+    <target name="test-selective" depends="jar" if="${test.remote-debug.defined}">
         <junit printsummary="yes">
             <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
             <classpath>
