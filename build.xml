@@ -13,6 +13,11 @@
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
+    <path id="classfiles">
+        <!--<fileset dir="${classes.dir}" includes="**/*.class"/>-->
+        <classfileset dir="${classes.dir}" includes="**/*"/>
+
+    </path>
 
 
     <echo message="Remote Debug properties:"/>
@@ -52,7 +57,7 @@
     <condition property="test.remote-debug.defined" else="false" value="true">
         <and>
             <isset property="teamcity.remote-debug.jvm.options"/>
-            <isset property="teamcity.remote-debug.junit.method"/>
+            <!--<isset property="teamcity.remote-debug.junit.method"/>-->
             <isset property="teamcity.remote-debug.junit.class"/>
         </and>
     </condition>
@@ -75,7 +80,7 @@
     </target>
     
     <target name="test-selective" depends="jar" if="${test.remote-debug.defined}">
-        <junit printsummary="yes" fork="on" forkmode="once">
+        <junit printsummary="yes" fork="on">
             <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
             <classpath>
                 <path refid="classpath"/>
@@ -84,7 +89,7 @@
 
             <formatter type="plain"/>
             
-            <test name="${teamcity.remote-debug.junit.class}" methods="${teamcity.remote-debug.junit.method}"/>
+            <test name="${teamcity.remote-debug.junit.class}"/>
         </junit>
     </target>
 
