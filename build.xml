@@ -32,7 +32,7 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true" debuglevel="lines">
             <classpath refid="classpath"/>
         </javac>
     </target>
@@ -79,7 +79,7 @@
         </junit>
     </target>
     
-    <target name="test-selective" depends="jar" if="${test.remote-debug.defined}">
+    <target name="test-selective" depends="compile" if="${test.remote-debug.defined}">
         <junit printsummary="yes" fork="on">
             <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
             <classpath>
@@ -89,7 +89,10 @@
 
             <formatter type="plain"/>
             
-            <test name="${teamcity.remote-debug.junit.class}"/>
+            <!--<test name="${teamcity.remote-debug.junit.class}"/>-->
+            <batchtest fork="yes">
+                <fileset dir="${src.dir}" includes="*Test.java"/>
+            </batchtest>
         </junit>
     </target>
 
