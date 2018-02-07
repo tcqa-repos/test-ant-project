@@ -1,9 +1,8 @@
 import junit.framework.TestCase;
-import org.junit.Ignore;
 
 import java.util.Random;
 
-public class MainTest extends TestCase {
+public class MainTest2 extends TestCase {
     public void testSuccess() throws Exception {
         byte two = 2;
         assertTrue(true);
@@ -18,11 +17,4 @@ public class MainTest extends TestCase {
         String message = "This is a new test";
         assertTrue(true);
     }
-
-    @Ignore ("test ignore")
-    public void testIgnored() {
-        String message = "This is a new test";
-        assertTrue(true);
-    }
-
 }

@@ -1,4 +1,7 @@
 <project name="test-ant-project" default="test">
+
+    <taskdef resource="testngtasks" classpath="lib/testng-6.7.jar"/>
+
     <property name="src.dir" value="src"/>
 
     <property name="build.dir" value="build"/>
@@ -14,8 +17,8 @@
     </path>
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
     <path id="classfiles">
-        <!--<fileset dir="${classes.dir}" includes="**/*.class"/>-->
-        <classfileset dir="${classes.dir}" includes="**/*"/>
+        <fileset dir="${classes.dir}" includes="**/*.class"/>
+        <!--<classfileset dir="${classes.dir}" includes="**/*"/>-->
 
     </path>
 
@@ -24,6 +27,8 @@
     <echo message="${teamcity.remote-debug.jvm.options}"/>
     <echo message="${teamcity.remote-debug.junit.method}"/>
     <echo message="${teamcity.remote-debug.junit.class}"/>
+    <echo message="${teamcity.remote-debug.testng.method}"/>
+    <echo message="${teamcity.remote-debug.testng.class}"/>
 
 
     <target name="clean">
@@ -58,7 +63,7 @@
         <and>
             <isset property="teamcity.remote-debug.jvm.options"/>
             <!--<isset property="teamcity.remote-debug.junit.method"/>-->
-            <isset property="teamcity.remote-debug.junit.class"/>
+            <isset property="teamcity.remote-debug.testng.class"/>
         </and>
     </condition>
 
@@ -79,21 +84,14 @@
         </junit>
     </target>
     
-    <target name="test-selective" depends="compile" if="${test.remote-debug.defined}">
-        <junit printsummary="yes" fork="on">
+    <target name="test-selective" depends="jar" if="${test.remote-debug.defined}">
+        <testng>
+            <jvmarg value="-Xdebug" />
+            <jvmarg value="-Xnoagent" />
             <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
-            <classpath>
-                <path refid="classpath"/>
-                <path refid="application"/>
-            </classpath>
 
-            <formatter type="plain"/>
-            
-            <!--<test name="${teamcity.remote-debug.junit.class}"/>-->
-            <batchtest fork="yes">
-                <fileset dir="${src.dir}" includes="*Test.java"/>
-            </batchtest>
-        </junit>
+            <classfileset dir="${classes.dir}" includes="**/*.class" />
+        </testng>
     </target>
 
     <target name="test" depends="test-all, test-selective"/>
