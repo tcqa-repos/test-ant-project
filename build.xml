@@ -11,7 +11,6 @@
     <property name="jar.dir" value="${build.dir}/jar"/>
 
     <property name="main-class" value="Main"/>
-
     <property name="lib.dir" value="lib"/>
 
     <path id="classpath">
@@ -21,7 +20,6 @@
     <path id="classfiles">
         <fileset dir="${classes.dir}" includes="**/*.class"/>
         <!--<classfileset dir="${classes.dir}" includes="**/*"/>-->
-
     </path>
 
     <target name="clean">
@@ -36,22 +34,10 @@
     </target>
 	
   <target name="testng" depends="compile">
-
-	<!-- Assume test.path contains the project library dependencies -->
-	<testng classpathref="test.path"
-		outputDir="${report.dir}" 
-		haltOnFailure="true">
-			
-		<!-- Extra project classpath, which is not included in above "test.path" -->
-		<!-- Tell Ant where is the project and test classes -->
-		<classpath location="${test.classes.dir}" />
-		<classpath location="${src.classes.dir}" />
-			
-		<!-- Tell Ant what test classes need to run -->
-		<classfileset dir="${test.classes.dir}" includes="**/*Test*.class" />
-			
+	<testng>
+		<classpath location="${classes.dir}" />
+		<classfileset dir="${classes.dir}" includes="**/*Test*.class" />
 	</testng>
-
   </target>
 
 </project>
