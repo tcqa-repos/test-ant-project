@@ -44,7 +44,7 @@
     </target>
 
     <target name="testng" depends="jar">
-        <testng>
+        <testng classpathref="classpath">
             <classfileset dir="${classes.dir}" includes="**/*.class" />
         </testng>
     </target>
