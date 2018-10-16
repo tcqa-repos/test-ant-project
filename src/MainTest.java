@@ -25,6 +25,12 @@ public class MainTest {
         String message = "This is a new test";
         assertTrue(true);
     }
+	
+	@Test
+    public void testShouldFail() throws Exception {
+        String message = "This is a failing test";
+        assertTrue(false);
+    }
 
     @Ignore ("test ignore")
     @Test

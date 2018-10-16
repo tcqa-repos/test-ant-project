@@ -1,100 +1,26 @@
-<project name="test-ant-project" default="test">
+<project name="test-ant-project" default="testng">
 
-    <taskdef resource="testngtasks" classpath="lib/testng-6.7.jar"/>
+  <taskdef name="testng" classname="org.testng.TestNGAntTask">
+	<classpath location="lib/testng-6.8.14.jar" />
+  </taskdef>
+	
+  <target name="testng" depends="compile">
 
-    <property name="src.dir" value="src"/>
+	<!-- Assume test.path contains the project library dependencies -->
+	<testng classpathref="test.path"
+		outputDir="${report.dir}" 
+		haltOnFailure="true">
+			
+		<!-- Extra project classpath, which is not included in above "test.path" -->
+		<!-- Tell Ant where is the project and test classes -->
+		<classpath location="${test.classes.dir}" />
+		<classpath location="${src.classes.dir}" />
+			
+		<!-- Tell Ant what test classes need to run -->
+		<classfileset dir="${test.classes.dir}" includes="**/*Test*.class" />
+			
+	</testng>
 
-    <property name="build.dir" value="build"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="jar.dir" value="${build.dir}/jar"/>
-
-    <property name="main-class" value="Main"/>
-
-    <property name="lib.dir" value="lib"/>
-
-    <path id="classpath">
-        <fileset dir="${lib.dir}" includes="**/*.jar"/>
-    </path>
-    <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
-    <path id="classfiles">
-        <fileset dir="${classes.dir}" includes="**/*.class"/>
-        <!--<classfileset dir="${classes.dir}" includes="**/*"/>-->
-
-    </path>
-
-
-    <echo message="Remote Debug properties:"/>
-    <echo message="${teamcity.remote-debug.jvm.options}"/>
-    <echo message="${teamcity.remote-debug.junit.method}"/>
-    <echo message="${teamcity.remote-debug.junit.class}"/>
-    <echo message="${teamcity.remote-debug.testng.method}"/>
-    <echo message="${teamcity.remote-debug.testng.class}"/>
-
-
-    <target name="clean">
-        <delete dir="${build.dir}"/>
-    </target>
-
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true" debuglevel="lines,vars,source">
-            <classpath refid="classpath"/>
-        </javac>
-    </target>
-
-    <target name="jar" depends="compile">
-        <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
-            <manifest>
-                <attribute name="Main-Class" value="${main-class}"/>
-            </manifest>
-        </jar>
-    </target>
-
-    <target name="run" depends="jar">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
-    </target>
-
-    <target name="clean-build" depends="clean,jar"/>
-
-    <target name="main" depends="clean,run"/>
-
-    <condition property="test.remote-debug.defined" else="false" value="true">
-        <and>
-            <isset property="teamcity.remote-debug.jvm.options"/>
-            <!--<isset property="teamcity.remote-debug.junit.method"/>-->
-            <isset property="teamcity.remote-debug.testng.class"/>
-        </and>
-    </condition>
-
-    <echo message="Remote debug: ${test.remote-debug.defined}"/>
-
-    <target name="test-all" depends="jar" unless="${test.remote-debug.defined}">
-        <junit printsummary="yes">
-            <classpath>
-                <path refid="classpath"/>
-                <path refid="application"/>
-            </classpath>
-
-            <formatter type="xml"/>
-
-            <batchtest fork="yes">
-                <fileset dir="${src.dir}" includes="*Test.java"/>
-            </batchtest>
-        </junit>
-    </target>
-    
-    <target name="test-selective" depends="jar" if="${test.remote-debug.defined}">
-        <testng>
-            <jvmarg value="-Xdebug" />
-            <jvmarg value="-Xnoagent" />
-            <jvmarg line="${teamcity.remote-debug.jvm.options}"/>
-
-            <classfileset dir="${classes.dir}" includes="**/*.class" />
-        </testng>
-    </target>
-
-    <target name="test" depends="test-all, test-selective"/>
-
+  </target>
 
 </project>
