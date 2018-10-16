@@ -1,10 +1,8 @@
-import junit.framework.TestCase;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class MainTest {
 
@@ -12,6 +10,13 @@ public class MainTest {
     public void testSuccess() throws Exception {
         byte two = 2;
         assertTrue(true);
+    }
+
+
+    @Test
+    public void testFail() throws Exception {
+        byte two = 2;
+        assertTrue(false)
     }
 
     @Test
@@ -22,19 +27,6 @@ public class MainTest {
 
     @Test
     public void testNew() throws Exception {
-        String message = "This is a new test";
-        assertTrue(true);
-    }
-	
-	@Test
-    public void testShouldFail() throws Exception {
-        String message = "This is a failing test";
-        assertTrue(false);
-    }
-
-    @Ignore ("test ignore")
-    @Test
-    public void ignoredTest() {
         String message = "This is a new test";
         assertTrue(true);
     }
