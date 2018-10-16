@@ -16,7 +16,7 @@ public class MainTest {
     @Test
     public void testFail() throws Exception {
         byte two = 2;
-        assertTrue(false)
+        assertTrue(false);
     }
 
     @Test
