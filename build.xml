@@ -1,7 +1,7 @@
 <project name="test-ant-project" default="testng">
 
   <taskdef name="testng" classname="org.testng.TestNGAntTask">
-	<classpath location="lib/testng-6.8.14.jar" />
+	<classpath location="lib/testng-6.14.3.jar" />
   </taskdef>
 	
   <target name="testng" depends="compile">
