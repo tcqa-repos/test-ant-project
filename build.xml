@@ -1,11 +1,8 @@
 <project name="test-ant-project" default="testng">
 
-  <taskdef name="testng" classname="org.testng.TestNGAntTask">
-	<classpath location="lib/testng-6.14.3.jar" />
-      <classpath location="lib/jcommander-1.72.jar" />
-  </taskdef>
+    <taskdef resource="testngtasks" classpath="lib/testng-6.14.3.jar"/>
 
-  <property name="src.dir" value="src"/>
+    <property name="src.dir" value="src"/>
 
     <property name="build.dir" value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
@@ -16,6 +13,8 @@
 
     <path id="classpath">
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${classes.dir}" includes="**/*.class"/>
+        <fileset dir="${src.dir}" includes="**/*.java"/>
     </path>
     <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
     <path id="classfiles">
@@ -44,8 +43,12 @@
     </target>
 
     <target name="testng" depends="jar">
-        <testng classpathref="classpath">
-            <classfileset dir="${classes.dir}" includes="**/*.class" />
+        <testng>
+            <classpath>
+                <path refid="classpath"/>
+                <path refid="application"/>
+            </classpath>
+            <classfileset dir="${classes.dir}" includes="**/*Test*.class" />
         </testng>
     </target>
 
